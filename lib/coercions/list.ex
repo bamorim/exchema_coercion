@@ -5,7 +5,7 @@ defmodule ExchemaCoercion.Coercions.List do
 
   def coerce(input, inner_type) when is_list(input) do
     input
-    |> Enum.map(&Exchema.Coercion.coerce(&1, inner_type))
+    |> Enum.map(&ExchemaCoercion.coerce(&1, inner_type))
   end
 
   def coerce(input, inner_type) when is_tuple(input) do

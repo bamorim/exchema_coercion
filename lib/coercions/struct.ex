@@ -21,7 +21,7 @@ defmodule ExchemaCoercion.Coercions.Struct do
     |> Enum.reduce(
       map,
       fn {key, type}, map ->
-        Map.put(map, key, Exchema.Coercion.coerce(Map.get(map, key), type))
+        Map.put(map, key, ExchemaCoercion.coerce(Map.get(map, key), type))
       end
     )
   end

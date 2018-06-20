@@ -3,7 +3,7 @@ defmodule ExchemaCoercion.Coercions.OneOf do
 
   def coerce(input, types) do
     types
-    |> Stream.map(&{&1, Exchema.Coercion.coerce(input, &1)})
+    |> Stream.map(&{&1, ExchemaCoercion.coerce(input, &1)})
     |> Stream.filter(fn {t, v} -> Exchema.is?(v, t) end)
     |> Enum.at(0)
     |> case do
