@@ -13,6 +13,7 @@ defmodule ExchemaCoercion do
   def coerce(input, {_, _} = type) do
     get_coercion_fun(type).(input)
   end
+
   # Refined Type
   def coerce(input, {:ref, supertype, _}) do
     coerce(input, supertype)
@@ -21,24 +22,28 @@ defmodule ExchemaCoercion do
   defp get_coercion_fun({type_mod, type_args} = type) do
     cond do
       :erlang.function_exported(type_mod, :__coerce__, 2) ->
-        &(type_mod.__coerce__(&1, type_args))
+        &type_mod.__coerce__(&1, type_args)
+
       :erlang.function_exported(type_mod, :__coerce__, 1) ->
         &type_mod.__coerce__/1
+
       coercion_mod(type) ->
-        &(coercion_mod(type).coerce(&1, type))
+        &coercion_mod(type).coerce(&1, type)
+
       true ->
-        &(coerce(&1, Type.resolve_type(type)))
+        &coerce(&1, Type.resolve_type(type))
     end
   end
 
   defp coercion_mod(type) do
     coercion_mods
-    |> Enum.find(&(&1.coerces?(type)))
+    |> Enum.find(& &1.coerces?(type))
   end
 
   defp coercion_mods do
     [
       ExchemaCoercion.Coercions
-    ] |> List.flatten
+    ]
+    |> List.flatten()
   end
 end

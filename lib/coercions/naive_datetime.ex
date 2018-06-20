@@ -7,13 +7,17 @@ defmodule ExchemaCoercion.Coercions.NaiveDateTime do
       _ -> input
     end
   end
+
   def coerce(%DateTime{} = input) do
     DateTime.to_naive(input)
   end
+
   def coerce(%Date{} = input) do
     with date <- Date.to_erl(input),
          {:ok, naive} <- NaiveDateTime.from_erl({date, {0, 0, 0}}),
-         do: naive, else: (_ -> input)
+         do: naive,
+         else: (_ -> input)
   end
+
   def coerce(i), do: i
 end

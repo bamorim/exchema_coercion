@@ -22,11 +22,14 @@ defmodule ExchemaCoercion.Coercions do
   @moduledoc """
   Default coercions library
 
-  It coerces #{@coerces |> Enum.map(&to_string/1) |> Enum.join(", ") |> String.replace("Elixir.T.", "")}
+  It coerces #{
+    @coerces |> Enum.map(&to_string/1) |> Enum.join(", ") |> String.replace("Elixir.T.", "")
+  }
   """
 
   @doc false
   def coerces?({type, _}), do: coerces?(type)
+
   def coerces?(type) do
     type in @coerces
   end

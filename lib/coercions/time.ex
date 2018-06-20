@@ -7,11 +7,14 @@ defmodule ExchemaCoercion.Coercions.Time do
       _ -> input
     end
   end
+
   def coerce(%NaiveDateTime{} = input) do
     NaiveDateTime.to_time(input)
   end
+
   def coerce(%DateTime{} = input) do
     DateTime.to_time(input)
   end
+
   def coerce(i), do: i
 end

@@ -6,7 +6,7 @@ defmodule ExchemaCoercionTest do
   import Exchema.Notation
   alias Exchema.Types, as: T
 
-  subtype MyAny, :any, []
+  subtype(MyAny, :any, [])
 
   subtype CustomCoercion, :any, [] do
     def __coerce__(input) do
@@ -14,12 +14,12 @@ defmodule ExchemaCoercionTest do
     end
   end
 
-  structure Struct, [foo: T.Integer]
+  structure(Struct, foo: T.Integer)
 
-  structure Nested, [child: {T.Optional, Nested}]
+  structure(Nested, child: {T.Optional, Nested})
 
-  subtype MyOneOf, {T.OneOf, [T.Integer, Struct, Nested]}, []
-  subtype MyOneStructOf, {T.OneStructOf, [Struct, Nested]}, []
+  subtype(MyOneOf, {T.OneOf, [T.Integer, Struct, Nested]}, [])
+  subtype(MyOneStructOf, {T.OneStructOf, [Struct, Nested]}, [])
 
   test "Coercion to any doesnt change anything" do
     assert "1234" = coerce("1234", :any)
@@ -96,13 +96,13 @@ defmodule ExchemaCoercionTest do
   end
 
   test "we can coerce tuples to list" do
-    result = coerce({1,2,3}, T.List)
-    assert [1,2,3] = result
+    result = coerce({1, 2, 3}, T.List)
+    assert [1, 2, 3] = result
   end
 
   test "we can coerce lists" do
     result = coerce(["1", 2, 3.1], {T.List, T.Integer})
-    assert [1,2,3] = result
+    assert [1, 2, 3] = result
   end
 
   test "we can coerce OneOf" do
