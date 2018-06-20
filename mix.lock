@@ -1,0 +1,3 @@
+%{
+  "exchema": {:git, "https://github.com/bamorim/exchema.git", "21b96e0a8b672dd01488086bb387a1fafc3cad64", []},
+}
