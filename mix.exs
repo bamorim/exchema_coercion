@@ -21,7 +21,7 @@ defmodule ExchemaCoercion.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:exchema, github: "bamorim/exchema"}
+      {:exchema, "~> 0.3.0"}
     ]
   end
 end
