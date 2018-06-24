@@ -15,12 +15,13 @@ defmodule ExchemaCoercion.Coercions do
       &C.Numeric.from_string/3,
       &C.Numeric.truncate/3,
       &C.Numeric.integer_as_float/3,
-      &C.Atom.to_string/3,
-      &C.Atom.from_string/3,
       &C.List.children/3,
       &C.OneOf.one_of/3,
       &C.Optional.optional/3,
-      &C.Struct.to_struct/3
+      &C.Struct.to_struct/3,
+      # Atom coercion in last to avoid converting nil to string
+      &C.Atom.to_string/3,
+      &C.Atom.from_string/3
     ]
   end
 end
