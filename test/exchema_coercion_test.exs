@@ -56,7 +56,7 @@ defmodule ExchemaCoercionTest do
   end
 
   test "coercing strings" do
-    assert "1" = coerce(1, T.String)
+    assert "something" = coerce(:something, T.String)
     assert "true" = coerce(true, T.String)
   end
 
