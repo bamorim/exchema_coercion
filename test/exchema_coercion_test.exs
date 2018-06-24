@@ -8,11 +8,7 @@ defmodule ExchemaCoercionTest do
 
   subtype(MyAny, :any, [])
 
-  subtype CustomCoercion, :any, [] do
-    def __coerce__(input) do
-      input <> input
-    end
-  end
+  subtype CustomCoercion, :any, []
 
   structure(Struct, foo: T.Integer)
 
@@ -30,13 +26,20 @@ defmodule ExchemaCoercionTest do
   end
 
   test "we can define a specific coercion for type" do
-    assert "1212" = coerce("12", CustomCoercion)
+    assert "1212" = coerce("12", CustomCoercion, [
+      fn
+        value, CustomCoercion, _ ->
+          {:ok, value <> value}
+        _, _, _ ->
+          :error
+      end
+    ])
   end
 
   test "coercing ints" do
     assert 1 = coerce("1", T.Integer)
     assert 1 = coerce(1.4, T.Integer)
-    assert 1 = coerce(0.9, T.Integer)
+    assert 0 = coerce(0.9, T.Integer)
     assert "a" = coerce("a", T.Integer)
   end
 
@@ -93,11 +96,6 @@ defmodule ExchemaCoercionTest do
     date = ~D[2000-01-01]
     assert %DateTime{year: 2000, day: 01, zone_abbr: "UTC"} = coerce(date, T.DateTime)
     assert %NaiveDateTime{year: 2000, day: 01} = coerce(date, T.NaiveDateTime)
-  end
-
-  test "we can coerce tuples to list" do
-    result = coerce({1, 2, 3}, T.List)
-    assert [1, 2, 3] = result
   end
 
   test "we can coerce lists" do

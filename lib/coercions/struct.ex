@@ -1,29 +1,20 @@
 defmodule ExchemaCoercion.Coercions.Struct do
-  @moduledoc false
-  def coerce(input, struct_mod, fields) when is_map(input) do
-    struct_mod
-    |> struct
-    |> Map.keys()
-    |> Enum.filter(&(&1 != :__struct__))
-    |> Enum.reduce(
-      struct(struct_mod),
-      fn key, output ->
-        Map.put(output, key, fuzzy_get(input, key))
-      end
-    )
-    |> coerce_values(fields)
+  @moduledoc """
+  Coercions for coercion to Exchema Structs.
+  """
+
+  @doc """
+  Coerces an input map as a struct given
+  """
+  def to_struct(input, {Exchema.Types.Struct, {struct_mod, fields}}, coercions) when is_map(input) do
+    {:ok, struct(struct_mod, coerce_values(input, fields, coercions))}
   end
+  def to_struct(input, _, _), do: :error
 
-  def coerce(input, _, _), do: input
-
-  defp coerce_values(map, fields) do
+  defp coerce_values(input, fields, coercions) do
     fields
-    |> Enum.reduce(
-      map,
-      fn {key, type}, map ->
-        Map.put(map, key, ExchemaCoercion.coerce(Map.get(map, key), type))
-      end
-    )
+    |> Enum.map(fn {key, type} -> {key, type, fuzzy_get(input, key)} end)
+    |> Enum.map(fn {key, type, value} -> {key, ExchemaCoercion.coerce(value, type, coercions)} end)
   end
 
   defp fuzzy_get(map, key) do

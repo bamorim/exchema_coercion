@@ -1,54 +1,26 @@
 defmodule ExchemaCoercion.Coercions do
-  alias Exchema.Types, as: T
   alias __MODULE__, as: C
 
-  @coerces [
-    T.Optional,
-    T.Integer,
-    T.Float,
-    T.Number,
-    T.String,
-    T.Boolean,
-    T.Struct,
-    T.Date,
-    T.Time,
-    T.DateTime,
-    T.List,
-    T.NaiveDateTime,
-    T.OneOf,
-    T.OneStructOf
-  ]
-
-  @moduledoc """
-  Default coercions library
-
-  It coerces #{
-    @coerces |> Enum.map(&to_string/1) |> Enum.join(", ") |> String.replace("Elixir.T.", "")
-  }
+  @doc """
+  All built-in coercions
   """
-
-  @doc false
-  def coerces?({type, _}), do: coerces?(type)
-
-  def coerces?(type) do
-    type in @coerces
+  def all do
+    [
+      &C.Boolean.from_string/3,
+      &C.Boolean.from_int/3,
+      &C.DateAndTime.from_iso8601/3,
+      &C.DateAndTime.from_epoch/3,
+      &C.DateAndTime.without_assumptions/3,
+      &C.DateAndTime.with_assumptions/3,
+      &C.Numeric.from_string/3,
+      &C.Numeric.truncate/3,
+      &C.Numeric.integer_as_float/3,
+      &C.String.to_string/3,
+      &C.String.to_atom/3,
+      &C.List.children/3,
+      &C.OneOf.one_of/3,
+      &C.Optional.optional/3,
+      &C.Struct.to_struct/3
+    ]
   end
-
-  def coerce(nil, {T.Optional, _}), do: nil
-  def coerce(other, {T.Optional, type}), do: ExchemaCoercion.coerce(other, type)
-  def coerce(input, {T.Struct, {mod, fields}}), do: C.Struct.coerce(input, mod, fields)
-  def coerce(input, {T.List, type}), do: C.List.coerce(input, type)
-  def coerce(input, {T.OneOf, types}), do: C.OneOf.coerce(input, types)
-  def coerce(input, {T.OneStructOf, types}), do: C.OneOf.coerce(input, types)
-  def coerce(input, {type, _}), do: coerce(input, type)
-  def coerce(input, T.Integer), do: C.Integer.coerce(input)
-  def coerce(input, T.Float), do: C.Float.coerce(input)
-  def coerce(input, T.Number), do: C.Float.coerce(input)
-  def coerce(input, T.String), do: C.String.coerce(input)
-  def coerce(input, T.Boolean), do: C.Boolean.coerce(input)
-  def coerce(input, T.Date), do: C.Date.coerce(input)
-  def coerce(input, T.Time), do: C.Time.coerce(input)
-  def coerce(input, T.DateTime), do: C.DateTime.coerce(input)
-  def coerce(input, T.NaiveDateTime), do: C.NaiveDateTime.coerce(input)
-  def coerce(input, _), do: input
 end

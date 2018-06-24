@@ -1,18 +1,19 @@
 defmodule ExchemaCoercion.Coercions.List do
-  @moduledoc false
+  @moduledoc """
+  Coercions for list types
+  """
 
-  def coerce(input, {}), do: coerce(input, :any)
+  alias Exchema.Types, as: T
 
-  def coerce(input, inner_type) when is_list(input) do
-    input
-    |> Enum.map(&ExchemaCoercion.coerce(&1, inner_type))
+  @doc """
+  Coerce list children
+  """
+  def children(input, {T.List, inner}, coercions) when is_list(input) do
+    { 
+      :ok,
+      input
+      |> Enum.map(&ExchemaCoercion.coerce(&1, inner, coercions))
+    }
   end
-
-  def coerce(input, inner_type) when is_tuple(input) do
-    input
-    |> Tuple.to_list()
-    |> coerce(inner_type)
-  end
-
-  def coerce(i, _), do: i
+  def children(_, _, _), do: :error
 end
