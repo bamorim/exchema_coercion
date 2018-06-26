@@ -17,6 +17,12 @@ defmodule ExchemaCoercionTest do
   subtype(MyOneOf, {T.OneOf, [T.Integer, Struct, Nested]}, [])
   subtype(MyOneStructOf, {T.OneStructOf, [Struct, Nested]}, [])
 
+  subtype(MyMap, {T.Map, {T.Atom, T.Atom}}, [])
+
+  test "it coerces maps" do
+    assert %{a: :b} = coerce(%{"a" => "b"}, MyMap)
+  end
+
   test "it coerces string to atoms by default" do
     assert :a = coerce("a", T.Atom)
   end

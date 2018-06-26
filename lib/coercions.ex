@@ -19,6 +19,7 @@ defmodule ExchemaCoercion.Coercions do
       &C.OneOf.one_of/3,
       &C.Optional.optional/3,
       &C.Struct.to_struct/3,
+      &C.Map.to_map/3,
       # Atom coercion in last to avoid converting nil to string
       &C.Atom.to_string/3,
       &C.Atom.from_string/3
