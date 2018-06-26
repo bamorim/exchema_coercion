@@ -27,12 +27,13 @@ defmodule ExchemaCoercion.Coercions.Atom do
   will not be garbage collector and that may lead to memory leaks.
 
   Because of that, it allows a third argument with allowed atoms.
+  By default, all values are allowed (which is good if you are parsing date you have serialized)
   """
   @spec from_string(any, Exchema.Type.t, [ExchemaCoercion.coercion], [atom]) :: ExchemaCoercion.result
-  def from_string(input, type, _, allowed \\ [])
+  def from_string(input, type, _, allowed \\ nil)
 
   def from_string(input, Exchema.Type.Atom, _, allowed) when is_binary(input) do
-    if input in Enum.map(allowed, &Atom.to_string/1) do
+    if allowed == nil || input in Enum.map(allowed, &Atom.to_string/1) do
       {:ok, String.to_atom(input)}
     else
       :error
