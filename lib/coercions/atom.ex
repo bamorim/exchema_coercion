@@ -32,7 +32,7 @@ defmodule ExchemaCoercion.Coercions.Atom do
   @spec from_string(any, Exchema.Type.t, [ExchemaCoercion.coercion], [atom]) :: ExchemaCoercion.result
   def from_string(input, type, _, allowed \\ nil)
 
-  def from_string(input, Exchema.Type.Atom, _, allowed) when is_binary(input) do
+  def from_string(input, Exchema.Types.Atom, _, allowed) when is_binary(input) do
     if allowed == nil || input in Enum.map(allowed, &Atom.to_string/1) do
       {:ok, String.to_atom(input)}
     else

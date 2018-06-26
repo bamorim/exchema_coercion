@@ -17,6 +17,10 @@ defmodule ExchemaCoercionTest do
   subtype(MyOneOf, {T.OneOf, [T.Integer, Struct, Nested]}, [])
   subtype(MyOneStructOf, {T.OneStructOf, [Struct, Nested]}, [])
 
+  test "it coerces string to atoms by default" do
+    assert :a = coerce("a", T.Atom)
+  end
+
   test "Coercion to any doesnt change anything" do
     assert "1234" = coerce("1234", :any)
   end
