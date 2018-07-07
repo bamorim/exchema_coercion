@@ -6,7 +6,7 @@ defmodule ExchemaCoercion do
   alias Exchema.Type
 
   @type result :: {:ok, any} | {:error, any} | :error
-  @type coercion :: (any, Type.t -> result)
+  @type coercion :: (any, Type.t, [coercion] -> result)
 
   @spec coerce(any, Type.t, [coercion]) :: any
   def coerce(input, type, coercions \\ ExchemaCoercion.Coercions.all)
