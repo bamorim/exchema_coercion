@@ -8,6 +8,7 @@ defmodule ExchemaCoercion.Coercions.List do
   @doc """
   Coerce list children
   """
+  @spec children(any, Exchema.Type.t, [ExchemaCoercion.coercion]) :: ExchemaCoercion.result
   def children(input, {T.List, inner}, coercions) when is_list(input) do
     { 
       :ok,
