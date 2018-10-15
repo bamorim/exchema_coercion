@@ -24,12 +24,11 @@ defmodule ExchemaCoercion.Coercions.Map do
   defp do_to_map(input, {_, {key_type, value_type}}, coercions) do
     input
     |> Map.to_list()
-    |> Enum.map(fn {key, value} ->
-      {
-        coerce(key, key_type, coercions),
-        coerce(value, value_type, coercions)
-      }
-    end)
-    |> Enum.into(%{})
+    |> Enum.into(%{}, fn {key, value} ->
+        {
+          coerce(key, key_type, coercions),
+          coerce(value, value_type, coercions)
+        }
+      end)
   end
 end
