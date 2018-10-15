@@ -8,7 +8,7 @@ defmodule ExchemaCoercionTest do
 
   subtype(MyAny, :any, [])
 
-  subtype CustomCoercion, :any, []
+  subtype(CustomCoercion, :any, [])
 
   structure(Struct, foo: T.Integer)
 
@@ -36,14 +36,16 @@ defmodule ExchemaCoercionTest do
   end
 
   test "we can define a specific coercion for type" do
-    assert "1212" = coerce("12", CustomCoercion, [
-      fn
-        value, CustomCoercion, _ ->
-          {:ok, value <> value}
-        _, _, _ ->
-          :error
-      end
-    ])
+    assert "1212" =
+             coerce("12", CustomCoercion, [
+               fn
+                 value, CustomCoercion, _ ->
+                   {:ok, value <> value}
+
+                 _, _, _ ->
+                   :error
+               end
+             ])
   end
 
   test "coercing ints" do

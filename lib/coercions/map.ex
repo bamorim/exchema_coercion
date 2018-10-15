@@ -9,7 +9,7 @@ defmodule ExchemaCoercion.Coercions.Map do
   @doc """
   Coerces Keyword lists and maps to maps given it's value
   """
-  @spec to_map(any, Exchema.Type.t, [ExchemaCoercion.coercion]) :: ExchemaCoercion.result
+  @spec to_map(any, Exchema.Type.t(), [ExchemaCoercion.coercion()]) :: ExchemaCoercion.result()
   def to_map(input, _, _) when not is_map(input),
     do: :error
 
@@ -23,12 +23,13 @@ defmodule ExchemaCoercion.Coercions.Map do
   @doc false
   defp do_to_map(input, {_, {key_type, value_type}}, coercions) do
     input
-    |> Map.to_list
-    |> Enum.map(fn {key, value} -> {
-      coerce(key, key_type, coercions),
-      coerce(value, value_type, coercions)
-    } end)
+    |> Map.to_list()
+    |> Enum.map(fn {key, value} ->
+      {
+        coerce(key, key_type, coercions),
+        coerce(value, value_type, coercions)
+      }
+    end)
     |> Enum.into(%{})
   end
-
 end

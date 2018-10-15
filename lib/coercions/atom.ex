@@ -7,11 +7,11 @@ defmodule ExchemaCoercion.Coercions.Atom do
   Coerces atoms to string.
 
   # Examples
-  
+
       iex> ExchemaCoercion.Coercions.String.to_string(:something, Exchema.Types.String, [])
       "something"
   """
-  @spec to_string(any, Exchema.Type.t, [ExchemaCoercion.coercion]) :: ExchemaCoercion.result
+  @spec to_string(any, Exchema.Type.t(), [ExchemaCoercion.coercion()]) :: ExchemaCoercion.result()
   def to_string(input, type, _)
 
   def to_string(input, Exchema.Types.String, _) when is_atom(input) do
@@ -29,7 +29,8 @@ defmodule ExchemaCoercion.Coercions.Atom do
   Because of that, it allows a third argument with allowed atoms.
   By default, all values are allowed (which is good if you are parsing date you have serialized)
   """
-  @spec from_string(any, Exchema.Type.t, [ExchemaCoercion.coercion], [atom]) :: ExchemaCoercion.result
+  @spec from_string(any, Exchema.Type.t(), [ExchemaCoercion.coercion()], [atom]) ::
+          ExchemaCoercion.result()
   def from_string(input, type, _, allowed \\ nil)
 
   def from_string(input, Exchema.Types.Atom, _, allowed) when is_binary(input) do

@@ -2,13 +2,14 @@ defmodule ExchemaCoercion.Coercions.DateAndTime do
   @moduledoc """
   Coercions for Date and Time types
   """
-  
+
   alias Exchema.Types, as: T
 
   @doc """
   Converts a ISO 8601 String to a native date/time format
   """
-  @spec from_iso8601(any, Exchema.Type.t, [ExchemaCoercion.coercion]) :: ExchemaCoercion.result
+  @spec from_iso8601(any, Exchema.Type.t(), [ExchemaCoercion.coercion()]) ::
+          ExchemaCoercion.result()
   def from_iso8601(input, T.DateTime, _) when is_binary(input) do
     with {:ok, val, _} <- DateTime.from_iso8601(input) do
       {:ok, val}
@@ -30,24 +31,26 @@ defmodule ExchemaCoercion.Coercions.DateAndTime do
   def from_iso8601(_, _, _), do: :error
 
   defguard valid_time_unit(unit)
-    when unit in [:second, :millisecond, :microsecond, :nanosecond]
-    or (is_integer(unit) and unit >= 1)
+           when unit in [:second, :millisecond, :microsecond, :nanosecond] or
+                  (is_integer(unit) and unit >= 1)
 
   @doc """
   This converts integer to datetimes (either naive and not).
   It supports a optional fourth argument to specify the unit (`:second` by default)
   """
-  @spec from_epoch(any, Exchema.Type.t, [ExchemaCoercion.coercion], System.time_unit()) :: ExchemaCoercion.result
+  @spec from_epoch(any, Exchema.Type.t(), [ExchemaCoercion.coercion()], System.time_unit()) ::
+          ExchemaCoercion.result()
   def from_epoch(value, type, _, unit \\ :second)
 
   def from_epoch(value, T.DateTime, _, unit) when valid_time_unit(unit) and is_integer(value) do
     DateTime.from_unix(value, unit)
   end
 
-  def from_epoch(value, T.NaiveDateTime, _, unit) when valid_time_unit(unit) and is_integer(value) do
+  def from_epoch(value, T.NaiveDateTime, _, unit)
+      when valid_time_unit(unit) and is_integer(value) do
     value
     |> DateTime.from_unix(unit)
-    |> DateTime.to_naive
+    |> DateTime.to_naive()
   end
 
   def from_epoch(_, _, _, _), do: :error
@@ -60,7 +63,8 @@ defmodule ExchemaCoercion.Coercions.DateAndTime do
   The hierarchy is
   DateTime > NaiveDateTime > (Date & Time)
   """
-  @spec without_assumptions(any, Exchema.Type.t, [ExchemaCoercion.coercion]) :: ExchemaCoercion.result
+  @spec without_assumptions(any, Exchema.Type.t(), [ExchemaCoercion.coercion()]) ::
+          ExchemaCoercion.result()
   def without_assumptions(%DateTime{} = input, T.NaiveDateTime, _) do
     {:ok, DateTime.to_naive(input)}
   end
@@ -89,7 +93,8 @@ defmodule ExchemaCoercion.Coercions.DateAndTime do
   assume UTC Time Zone. If we try to convert a Date to DateTime or
   NaiveDateTime, it will assume the beginning of the day
   """
-  @spec with_assumptions(any, Exchema.Type.t, [ExchemaCoercion.coercion]) :: ExchemaCoercion.result
+  @spec with_assumptions(any, Exchema.Type.t(), [ExchemaCoercion.coercion()]) ::
+          ExchemaCoercion.result()
   def with_assumptions(%NaiveDateTime{} = input, T.DateTime, _) do
     DateTime.from_naive(input, "Etc/UTC")
   end
