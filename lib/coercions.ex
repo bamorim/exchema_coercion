@@ -1,4 +1,7 @@
 defmodule ExchemaCoercion.Coercions do
+  @moduledoc """
+  Coercions for various types
+  """
   alias __MODULE__, as: C
 
   @doc """
