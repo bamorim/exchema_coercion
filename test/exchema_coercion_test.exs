@@ -8,7 +8,7 @@ defmodule ExchemaCoercionTest do
 
   subtype(MyAny, :any, [])
 
-  subtype CustomCoercion, :any, []
+  subtype(CustomCoercion, :any, [])
 
   structure(Struct, foo: T.Integer)
 
@@ -36,14 +36,16 @@ defmodule ExchemaCoercionTest do
   end
 
   test "we can define a specific coercion for type" do
-    assert "1212" = coerce("12", CustomCoercion, [
-      fn
-        value, CustomCoercion, _ ->
-          {:ok, value <> value}
-        _, _, _ ->
-          :error
-      end
-    ])
+    assert "1212" =
+             coerce("12", CustomCoercion, [
+               fn
+                 value, CustomCoercion, _ ->
+                   {:ok, value <> value}
+
+                 _, _, _ ->
+                   :error
+               end
+             ])
   end
 
   test "coercing ints" do
@@ -73,6 +75,15 @@ defmodule ExchemaCoercionTest do
   test "coercing optionals" do
     assert is_nil(coerce(nil, {T.Optional, T.Integer}))
     assert 1 = coerce("1", {T.Optional, T.Integer})
+  end
+
+  test "coercing optional lists" do
+    assert is_nil(coerce(nil, {T.Optional, {{T.List, T.Integer}}}))
+    assert [1] = coerce(["1"], {T.Optional, {{T.List, T.Integer}}})
+  end
+
+  test "coercing list of optionals" do
+    assert [1, nil] = coerce(["1", nil], {T.List, {{T.Optional, T.Integer}}})
   end
 
   test "there is a smart coercion for Exchema.Struct's" do
