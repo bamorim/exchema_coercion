@@ -11,6 +11,7 @@ defmodule ExchemaCoercionTest do
   subtype(CustomCoercion, :any, [])
 
   structure(Struct, foo: T.Integer)
+  structure(StructWithBoolean, foo: T.Boolean)
 
   structure(Nested, child: {T.Optional, Nested})
 
@@ -65,6 +66,7 @@ defmodule ExchemaCoercionTest do
     assert coerce("true", T.Boolean)
     refute coerce("false", T.Boolean)
     assert "nothing" = coerce("nothing", T.Boolean)
+    assert %StructWithBoolean{foo: false} = coerce(%{"foo" => false}, StructWithBoolean)
   end
 
   test "coercing strings" do

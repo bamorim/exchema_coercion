@@ -20,7 +20,7 @@ defmodule ExchemaCoercion.Coercions.Struct do
   defp fuzzy_get(map, key) do
     [& &1, &to_string/1]
     |> Enum.map(&Map.get(map, &1.(key)))
-    |> Enum.filter(& &1)
+    |> Enum.filter(& not is_nil(&1))
     |> List.first()
   end
 end
