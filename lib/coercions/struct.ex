@@ -6,10 +6,12 @@ defmodule ExchemaCoercion.Coercions.Struct do
   @doc """
   Coerces an input map as a struct given
   """
-  def to_struct(input, {Exchema.Types.Struct, {struct_mod, fields}}, coercions) when is_map(input) do
+  def to_struct(input, {Exchema.Types.Struct, {struct_mod, fields}}, coercions)
+      when is_map(input) do
     {:ok, struct(struct_mod, coerce_values(input, fields, coercions))}
   end
-  def to_struct(input, _, _), do: :error
+
+  def to_struct(_input, _, _), do: :error
 
   defp coerce_values(input, fields, coercions) do
     fields

@@ -14,7 +14,7 @@ defmodule ExchemaCoercion.Coercions.OneOf do
   a "type" field)
   """
 
-  @spec one_of(any, Exchema.Type.t, [ExchemaCoercion.coercion]) :: ExchemaCoercion.result
+  @spec one_of(any, Exchema.Type.t(), [ExchemaCoercion.coercion()]) :: ExchemaCoercion.result()
   def one_of(input, {type, types}, coercions) when type in @one_of_types do
     types
     |> Stream.map(&{&1, ExchemaCoercion.coerce(input, &1, coercions)})
